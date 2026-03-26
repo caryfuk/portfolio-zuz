@@ -1,4 +1,5 @@
 ---
+import logoRaw from '../assets/zk.svg?raw';
 const pathname = Astro.url.pathname;
 const linkClass = 'text-[13px] text-black no-underline tracking-[0.04em] transition-opacity duration-200 hover:opacity-40';
 const activeClass = 'opacity-40';
@@ -6,7 +7,7 @@ const activeClass = 'opacity-40';
 
 <nav transition:persist="site-header" class="fixed top-0 left-0 right-0 z-[100] bg-white flex items-start justify-between px-5 pt-4 pb-3 sm:px-6 sm:pt-[18px] sm:pb-[14px] lg:px-10 lg:pt-5 lg:pb-4">
   <a class="flex items-center gap-2.5 cursor-pointer" href="/">
-    <img src="/logo.jpg" alt="Zuzi Knaze" class="w-[52px] h-[52px] object-contain" />
+    <span class="block w-[52px] h-[52px]" aria-label="Zuzi Knaze"><Fragment set:html={logoRaw} /></span>
   </a>
   <ul class="hidden sm:flex gap-9 list-none pt-1">
     <li><a href="/" class={`${linkClass} ${pathname === '/' || pathname.startsWith('/projects') ? activeClass : ''}`}>projects</a></li>

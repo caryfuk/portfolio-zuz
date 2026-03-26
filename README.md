@@ -1,68 +1,95 @@
-# Astro Starter Kit: Blog
+# architektka
 
-```sh
-npm create astro@latest -- --template blog
+Portfolio website for Zuzi Knaze — interior creator based in The Hague. Built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com), and MDX.
+
+## Commands
+
+All commands are run from the project root:
+
+| Command | Action |
+| :--- | :--- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start local dev server at `localhost:4321` |
+| `npm run build` | Type-check and build to `./dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run thumbnails` | Regenerate project grid thumbnails only (without a full build) |
+
+`npm run build` automatically runs two pre-build scripts before the Astro build:
+- **generate-icons** — rasterises `src/assets/zk.svg` into PWA icons at `public/icons/`
+- **generate-thumbnails** — creates 600×600 JPEG thumbnails at `public/thumbnails/` from the first image of each project; skips files that are already up to date
+
+## Project structure
+
+```
+src/
+  assets/          # Source SVG logo (zk.svg)
+  components/      # Shared Astro components (Header, BaseHead, …)
+  content/
+    projects/      # One .md file per project (see below)
+    blog/          # Blog posts in Markdown / MDX
+  layouts/         # Page layouts (Project, BlogPost)
+  pages/           # Route pages (index, about, contact, price, blog/…)
+  styles/
+    global.css     # Global resets and CSS custom properties
+public/
+  projects/        # Full-resolution project images, grouped by project slug
+  thumbnails/      # Auto-generated grid thumbnails (do not edit by hand)
+  icons/           # Auto-generated PWA icons (do not edit by hand)
+  favicon.svg      # Favicon derived from the ZK logo
+scripts/
+  generate-thumbnails.mjs
+  generate-icons.mjs
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
+## Adding a project
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+1. **Create the content file** at `src/content/projects/<slug>.md`:
 
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
+```markdown
+---
+title: Project Name
+order: 5          # Controls sort order on the grid (lower = first)
+category:
+  - interior-design   # or: exterior-design, furniture, object
+featured: false       # Set true to highlight on the home page
+year: "2024"          # Optional
+location: "City, Country"  # Optional
+credits: "Design by Zuzi Knaze"  # Optional
+isViz: true           # Optional — marks the project as a visualisation only
+images:
+  - title: ""
+    description: ""
+    url: cover          # filename without extension
+  - title: ""
+    description: ""
+    url: detail-1
+---
 
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+Optional body text shown on the project page.
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+2. **Add the images** to `public/projects/<slug>/` as JPEG files. The filenames must match the `url` values in the frontmatter (without the `.jpg` extension). The first image in the list is used as the grid thumbnail.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+3. **Run the build** (`npm run build`) or just `npm run thumbnails` to regenerate the thumbnail for the new project. Thumbnails are cropped to 600×600 from the centre of the image.
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+## Adding a blog post
 
-Any static assets, like images, can be placed in the `public/` directory.
+Create a Markdown or MDX file in `src/content/blog/`:
 
-## 🧞 Commands
+```markdown
+---
+title: Post title
+description: One-sentence summary used in meta tags and the post list.
+pubDate: 2024-06-01
+updatedDate: 2024-06-15   # Optional
+heroImage: /path/to/image.jpg  # Optional
+---
 
-All commands are run from the root of the project, from a terminal:
+Post content here.
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Notes
 
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- `public/thumbnails/` and `public/icons/` are generated assets — do not commit hand-edited versions of these files.
+- The thumbnail script only regenerates a file if the source image is newer than the existing thumbnail, so it is safe to run frequently.
+- Dark mode support is planned but not yet implemented. See `DARK_MODE_PLAN.md` for the design.

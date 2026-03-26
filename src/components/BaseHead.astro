@@ -1,22 +1,78 @@
 ---
 import '../styles/global.css';
 import { ViewTransitions } from 'astro:transitions';
+import { SITE_TITLE } from '../consts';
 
 interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	imageAlt?: string;
+	type?: 'website' | 'article';
+	pubDate?: Date;
+	updatedDate?: Date;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+const {
+	title,
+	description,
+	image = '/social-preview.jpg',
+	imageAlt = title,
+	type = 'website',
+	pubDate,
+	updatedDate,
+} = Astro.props;
+
+const ogImageURL = new URL(image, Astro.url);
+
+const personSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Zuzi Knaze',
+	url: Astro.site?.toString(),
+	jobTitle: 'Interior Creator',
+	description: 'Interior creator based in The Hague, working at the intersection of architecture, spatial design, and everyday life.',
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'The Hague',
+		addressCountry: 'NL',
+	},
+	sameAs: ['https://www.instagram.com/zuzana.knazeova'],
+};
+
+const websiteSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: SITE_TITLE,
+	url: Astro.site?.toString(),
+};
+
+const articleSchema = type === 'article' && pubDate
+	? {
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: title,
+		description: description,
+		image: ogImageURL.toString(),
+		datePublished: pubDate.toISOString(),
+		...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
+		author: {
+			'@type': 'Person',
+			name: 'Zuzi Knaze',
+			url: Astro.site?.toString(),
+		},
+	}
+	: null;
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
 <meta name="generator" content={Astro.generator} />
+<meta name="robots" content="index, follow" />
 
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,33 +82,107 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
+<!-- RSS Autodiscovery -->
+<link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} — Blog`} href="/rss.xml" />
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
 <meta property="og:url" content={Astro.url} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:locale" content="en_US" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:image:alt" content={imageAlt} />
+{type === 'article' && pubDate && (
+	<meta property="article:published_time" content={pubDate.toISOString()} />
+)}
+{type === 'article' && updatedDate && (
+	<meta property="article:modified_time" content={updatedDate.toISOString()} />
+)}
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta property="twitter:image" content={ogImageURL} />
+<meta property="twitter:image:alt" content={imageAlt} />
+
+<!-- Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+{articleSchema && (
+	<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+)}
 
 <ViewTransitions />
 
 <script>
-  // astro:after-preparation fires after the next page's HTML is fetched but before
-  // startViewTransition() is called. We kick off image decoding here so that by the
-  // time the transition needs to swap the DOM, images are already in memory.
   let decodePromises: Promise<void>[] = [];
+  let elevatedName: string | null = null;
 
+  // For every project thumbnail in `doc` except the one we want to animate,
+  // set view-transition-name: none directly as an inline style. Inline styles
+  // beat any stylesheet rule — including Astro's generated ones — without
+  // needing !important, so this works regardless of how Astro compiles
+  // transition:name (inline style or data-attr + CSS rule).
+  //
+  // With no competing named elements the browser creates no competing
+  // ::view-transition-group pseudo-elements, eliminating the stacking problem.
+  function suppressOthers(doc: Document, keepName: string) {
+    doc.querySelectorAll<HTMLAnchorElement>('a[href^="/projects/"]').forEach(link => {
+      const slug = (link.getAttribute('href') ?? '')
+        .replace(/^\/projects\//, '').replace(/\/$/, '');
+      if (`project-${slug}` === keepName) return;
+      const img = link.querySelector<HTMLElement>('img');
+      if (!img) return;
+      img.dataset.vtSuppress = 'true';
+      img.style.setProperty('view-transition-name', 'none');
+    });
+  }
+
+  // Remove the inline override so the Astro-applied view-transition-name
+  // (inline or via CSS rule) is restored for the next navigation.
+  function restore(doc: Document) {
+    doc.querySelectorAll<HTMLElement>('img[data-vt-suppress]').forEach(img => {
+      img.removeAttribute('data-vt-suppress');
+      img.style.removeProperty('view-transition-name');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href') ?? '';
+
+    if (/^\/projects\/[^/]+\/?$/.test(href)) {
+      // List → project: transition name from the clicked link.
+      const slug = href.replace(/^\/projects\//, '').replace(/\/$/, '');
+      elevatedName = `project-${slug}`;
+    } else if (href === '/') {
+      // Project → list: transition name from the current URL.
+      const m = window.location.pathname.match(/^\/projects\/([^/]+)\/?$/);
+      if (m) elevatedName = `project-${m[1]}`;
+    }
+
+    if (elevatedName) {
+      // Suppress other thumbnails on the outgoing page right now, before
+      // startViewTransition is called, so the outgoing snapshot sees them
+      // as view-transition-name: none and creates no groups for them.
+      restore(document);
+      suppressOthers(document, elevatedName);
+    }
+  }, true);
+
+  // astro:after-preparation fires after the next page's HTML is fetched but
+  // before startViewTransition() is called. Kick off image decoding so that
+  // by the time the transition needs to swap the DOM, images are in memory.
   document.addEventListener('astro:after-preparation', (event) => {
     const incoming = (event as any).newDocument as Document;
     decodePromises = [...incoming.querySelectorAll<HTMLImageElement>('img[src]')]
@@ -64,15 +194,25 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
       });
   });
 
-  // astro:before-swap runs inside startViewTransition's callback, which is awaited.
-  // We wait for any remaining decode work, THEN swap so the new DOM is painted with
-  // already-decoded images — the transition snapshot captures them correctly.
+  // astro:before-swap fires inside startViewTransition's callback.
+  // Suppress other thumbnails in newDocument before the swap so the incoming
+  // snapshot (taken after the swap completes) also sees no competing names.
   document.addEventListener('astro:before-swap', (event) => {
+    if (elevatedName) {
+      suppressOthers((event as any).newDocument as Document, elevatedName);
+    }
+
     const originalSwap = event.swap;
     event.swap = async () => {
       await Promise.all(decodePromises);
       decodePromises = [];
       originalSwap();
     };
+  });
+
+  // Restore suppressed elements after each navigation so the next one is clean.
+  document.addEventListener('astro:page-load', () => {
+    restore(document);
+    elevatedName = null;
   });
 </script>

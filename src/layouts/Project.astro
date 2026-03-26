@@ -19,7 +19,12 @@ const imageUrls = images.map((img: any) => `/projects/${slug}/${img.url}.jpg`);
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={`${title} — Zuzi Knaze`} description={title} />
+    <BaseHead
+      title={`${title} — Zuzi Knaze`}
+      description={[title, location, year].filter(Boolean).join(', ')}
+      image={imageUrls[0]}
+      imageAlt={title}
+    />
   </head>
   <body class="lg:overflow-hidden">
     <Header />
