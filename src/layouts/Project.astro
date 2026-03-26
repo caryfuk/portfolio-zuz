@@ -1,0 +1,38 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+type Props = CollectionEntry<'projects'>
+
+const { id, data } = Astro.props as Props;
+const { title, description, images } = data as Props['data'];
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			main {
+				width: calc(100% - 2em);
+				max-width: 100%;
+				margin: auto;
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			}
+		</style>
+	</head>
+
+	<body>
+		<Header />
+		<h2>{title}</h2>
+		<p>{description}</p>
+		<main>
+			{images.map((image) => (
+				<img src={`/projects/${id}/${image.url}.jpg`} alt={image.title} />
+			))}
+		</main>
+		<Footer />
+	</body>
+</html>
