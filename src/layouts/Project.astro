@@ -30,31 +30,31 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
   </head>
   <body class="lg:overflow-hidden">
     <Header />
-    <div class="flex flex-col pt-[72px] sm:pt-[90px] lg:flex-row lg:h-screen">
-      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-[260px] sm:h-[55vw] sm:min-h-[280px] lg:flex-[1.4] lg:h-[calc(100vh-90px)] lg:min-h-0">
+    <div class="flex flex-col pt-[4.5rem] sm:pt-[5.625rem] lg:flex-row lg:h-screen">
+      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-[1.4] lg:h-[calc(100vh-5.625rem)] lg:min-h-0">
         <img id="viewer-img" src={imageUrls[0] ?? ''} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-cover block" />
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
-      <div class="flex-none border-t border-line px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:border-t-0 lg:border-l lg:py-10 lg:px-12">
+      <div class="flex-none px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:py-10 lg:px-12">
         <div class="flex-1 flex flex-col justify-center">
-          <a href="/" class="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
+          <a href="/" class="inline-flex items-center gap-2 text-[0.8125rem] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
             <span>←</span>
             <span>Projects</span>
           </a>
-          <h2 class="font-serif text-[20px] font-normal mb-[14px] leading-[1.25] sm:text-[26px]">{title}</h2>
-          <div class="mb-[18px]">
-            {year && <p class="text-[13px] text-muted leading-[1.9]">{year}</p>}
-            {location && <p class="text-[13px] text-muted leading-[1.9]">{location}</p>}
-            {isViz && <p class="text-[12px] text-faint italic mt-[5px]">Visualisation / concept</p>}
+          <h2 class="font-serif text-xl font-normal mb-3.5 leading-[1.25] sm:text-2xl">{title}</h2>
+          <div class="mb-[1.125rem]">
+            {year && <p class="text-[0.8125rem] text-muted leading-[1.9]">{year}</p>}
+            {location && <p class="text-[0.8125rem] text-muted leading-[1.9]">{location}</p>}
+            {isViz && <p class="text-xs text-faint italic mt-1">Visualisation / concept</p>}
           </div>
-          <div class="text-[13.5px] leading-[1.85] text-prose mb-5"><Content /></div>
-          {credits && <p class="text-[12.5px] text-muted leading-[2]">{credits}</p>}
+          <div class="text-sm leading-[1.85] text-prose mb-5"><Content /></div>
+          {credits && <p class="text-xs text-muted leading-[2]">{credits}</p>}
         </div>
-        <div transition:persist="project-nav" class="flex items-center justify-between pt-6 border-t border-line">
-          <button class="bg-transparent border-0 font-sans text-[12px] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
-          <span class="text-[12px] text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
-          <button class="bg-transparent border-0 font-sans text-[12px] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>
+        <div transition:persist="project-nav" class="flex items-center justify-between pt-6">
+          <button class="bg-transparent border-0 font-sans text-xs text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
+          <span class="text-xs text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
+          <button class="bg-transparent border-0 font-sans text-xs text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>
         </div>
       </div>
     </div>

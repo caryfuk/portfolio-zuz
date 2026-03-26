@@ -15,8 +15,8 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
   </head>
   <body>
     <Header />
-    <main class="pt-[72px] px-5 sm:pt-[100px]">
-      <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+    <main class="pt-[4.5rem] px-5 sm:pt-24">
+      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {projects.map((project) => {
           const cover = project.data.images[0];
           const coverSrc = cover ? `/thumbnails/${project.slug}.jpg` : null;
@@ -32,7 +32,7 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
                 />
               )}
               <div class="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <span class="text-[12px] font-medium text-white tracking-[0.06em] uppercase">{project.data.title}</span>
+                <span class="text-xs font-medium text-white tracking-[0.06em] uppercase">{project.data.title}</span>
               </div>
             </a>
           );
