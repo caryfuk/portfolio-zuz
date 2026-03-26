@@ -32,7 +32,7 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
     <Header />
     <div class="flex flex-col pt-[4.5rem] sm:pt-[5.625rem] lg:flex-row lg:h-screen">
       <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-[1.4] lg:h-[calc(100vh-5.625rem)] lg:min-h-0">
-        <img id="viewer-img" src={imageUrls[0] ?? ''} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-cover block" />
+        <img id="viewer-img" src={`/thumbnails/${slug}.jpg`} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-cover block" />
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
@@ -68,6 +68,7 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
       const counter = document.getElementById('viewer-counter');
       const total = imageUrls.length;
       let isAnimating = false;
+      let initialSwapPending = true;
       let touchStartX = 0;
 
       function updateCounter() {
@@ -76,6 +77,7 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
 
       function goTo(index) {
         if (isAnimating || index < 0 || index >= total) return;
+        initialSwapPending = false;
         isAnimating = true;
         img.style.opacity = '0';
         setTimeout(() => {
@@ -122,11 +124,23 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
         if (Math.abs(dx) > 40) { if (dx < 0) next(); else prev(); }
       }, { passive: true });
 
-      if (current > 0) {
-        img.src = imageUrls[current];
-      }
       img.style.transition = 'opacity .35s ease';
       updateCounter();
+
+      // img.src starts as the thumbnail (same URL the list uses), so the
+      // view-transition is a pixel-perfect match with no flash. Once the
+      // full-res image is ready, swap it in silently.
+      const startUrl = imageUrls[current];
+      if (startUrl) {
+        const hi = new Image();
+        hi.src = startUrl;
+        hi.onload = () => {
+          if (initialSwapPending) {
+            initialSwapPending = false;
+            img.src = startUrl;
+          }
+        };
+      }
     </script>
   </body>
 </html>
