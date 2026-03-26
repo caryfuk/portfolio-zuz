@@ -4,13 +4,33 @@ import Project from '../../layouts/Project.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  return projects.map((project) => ({
-    params: { slug: project.id },
-    props: project,
-  }));
+  const sorted = projects.sort((a, b) => a.data.order - b.data.order);
+
+  return sorted.map((project, i) => {
+    const prev = i > 0 ? sorted[i - 1] : sorted[sorted.length - 1];
+    const next = i < sorted.length - 1 ? sorted[i + 1] : sorted[0];
+
+    return {
+      params: { slug: project.slug },
+      props: {
+        project,
+        prevSlug: prev.slug,
+        prevImageCount: prev.data.images.length,
+        nextSlug: next.slug,
+      },
+    };
+  });
 }
 
-const project: CollectionEntry<'projects'> = Astro.props;
+type Props = {
+  project: CollectionEntry<'projects'>;
+  prevSlug: string;
+  prevImageCount: number;
+  nextSlug: string;
+};
+
+const { project, prevSlug, prevImageCount, nextSlug } = Astro.props;
+const { Content } = await project.render();
 ---
 
-<Project {...project} />
+<Project {...project} Content={Content} prevSlug={prevSlug} prevImageCount={prevImageCount} nextSlug={nextSlug} />

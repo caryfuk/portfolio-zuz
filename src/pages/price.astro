@@ -1,0 +1,51 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Price — ${SITE_TITLE}`} description="Interior design services and pricing." />
+  </head>
+  <body>
+    <Header />
+    <main class="px-5 pt-[80px] pb-[52px] min-h-screen sm:px-6 sm:pt-[90px] sm:pb-[60px] lg:px-10 lg:pt-[100px] lg:pb-20">
+      <div class="max-w-[580px] mx-auto mt-8">
+        <span class="block text-[13px] tracking-[0.1em] uppercase text-muted mb-5">Price</span>
+        <p class="text-[13.5px] text-muted mb-12 leading-[1.8]">All projects are quoted individually based on scope and complexity. The rates below are indicative. Get in touch to discuss your project.</p>
+        <table class="w-full border-collapse text-[13.5px]">
+          <tr class="border-t border-b border-[#e5e5e5]">
+            <td class="py-[18px] align-top">
+              <div class="font-medium text-[14px]">Consultation</div>
+              <div class="text-[12px] text-muted mt-[3px]">1–2 hour session, on location or remote</div>
+            </td>
+            <td class="py-[18px] align-top text-right text-muted whitespace-nowrap">from €150</td>
+          </tr>
+          <tr class="border-b border-[#e5e5e5]">
+            <td class="py-[18px] align-top">
+              <div class="font-medium text-[14px]">Interior Design</div>
+              <div class="text-[12px] text-muted mt-[3px]">Concept, drawings, material board</div>
+            </td>
+            <td class="py-[18px] align-top text-right text-muted whitespace-nowrap">from €2,500</td>
+          </tr>
+          <tr class="border-b border-[#e5e5e5]">
+            <td class="py-[18px] align-top">
+              <div class="font-medium text-[14px]">Renovation Guidance</div>
+              <div class="text-[12px] text-muted mt-[3px]">Full follow-up from design to execution</div>
+            </td>
+            <td class="py-[18px] align-top text-right text-muted whitespace-nowrap">on request</td>
+          </tr>
+          <tr class="border-b border-[#e5e5e5]">
+            <td class="py-[18px] align-top">
+              <div class="font-medium text-[14px]">Custom Furniture</div>
+              <div class="text-[12px] text-muted mt-[3px]">Design + production coordination</div>
+            </td>
+            <td class="py-[18px] align-top text-right text-muted whitespace-nowrap">on request</td>
+          </tr>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>

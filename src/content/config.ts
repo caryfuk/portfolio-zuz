@@ -14,19 +14,21 @@ const blog = defineCollection({
 });
 
 const projects = defineCollection({
-	type: 'data',
-	// Type-check frontmatter using a schema
+	type: 'content',
 	schema: z.object({
 		title: z.string(),
-		category: z.array(z.string()),
-		description: z.string(),
 		order: z.number(),
+		category: z.array(z.string()),
 		featured: z.boolean(),
+		year: z.string().optional(),
+		location: z.string().optional(),
+		credits: z.string().optional(),
+		isViz: z.boolean().optional(),
 		images: z.array(z.object({
 			title: z.string(),
 			description: z.string(),
 			url: z.string(),
-		})),
+		})).default([]),
 	}),
 });
 

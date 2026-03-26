@@ -2,37 +2,124 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 
-type Props = CollectionEntry<'projects'>
+type Props = CollectionEntry<'projects'> & {
+  Content: any;
+  prevSlug: string;
+  prevImageCount: number;
+  nextSlug: string;
+};
 
-const { id, data } = Astro.props as Props;
-const { title, description, images } = data as Props['data'];
+const { slug, data, Content, prevSlug, prevImageCount, nextSlug } = Astro.props as Props;
+const { title, images, year, location, credits, isViz } = data;
+
+const imageUrls = images.map((img: any) => `/projects/${slug}/${img.url}.jpg`);
 ---
 
+<!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: auto;
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-			}
-		</style>
-	</head>
+  <head>
+    <BaseHead title={`${title} — Zuzi Knaze`} description={title} />
+  </head>
+  <body class="lg:overflow-hidden">
+    <Header />
+    <div class="flex flex-col pt-[72px] sm:pt-[90px] lg:flex-row lg:h-screen">
+      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-[260px] sm:h-[55vw] sm:min-h-[280px] lg:flex-[1.4] lg:h-[calc(100vh-90px)] lg:min-h-0">
+        <img id="viewer-img" src={imageUrls[0] ?? ''} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-cover block" />
+        <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
+        <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
+      </div>
+      <div class="flex-none border-t border-[#e8e8e8] px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:border-t-0 lg:border-l lg:py-10 lg:px-12">
+        <div class="flex-1 flex flex-col justify-center">
+          <a href="/" class="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
+            <span>←</span>
+            <span>Projects</span>
+          </a>
+          <h2 class="font-serif text-[20px] font-normal mb-[14px] leading-[1.25] sm:text-[26px]">{title}</h2>
+          <div class="mb-[18px]">
+            {year && <p class="text-[13px] text-muted leading-[1.9]">{year}</p>}
+            {location && <p class="text-[13px] text-muted leading-[1.9]">{location}</p>}
+            {isViz && <p class="text-[12px] text-[#bbb] italic mt-[5px]">Visualisation / concept</p>}
+          </div>
+          <div class="text-[13.5px] leading-[1.85] text-[#333] mb-5"><Content /></div>
+          {credits && <p class="text-[12.5px] text-muted leading-[2]">{credits}</p>}
+        </div>
+        <div transition:persist="project-nav" class="flex items-center justify-between pt-6 border-t border-[#e8e8e8]">
+          <button class="bg-transparent border-0 font-sans text-[12px] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
+          <span class="text-[12px] text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
+          <button class="bg-transparent border-0 font-sans text-[12px] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>
+        </div>
+      </div>
+    </div>
 
-	<body>
-		<Header />
-		<h2>{title}</h2>
-		<p>{description}</p>
-		<main>
-			{images.map((image) => (
-				<img src={`/projects/${id}/${image.url}.jpg`} alt={image.title} />
-			))}
-		</main>
-		<Footer />
-	</body>
+    <script is:inline define:vars={{ imageUrls, title, prevSlug, prevImageCount, nextSlug }}>
+      const params = new URLSearchParams(window.location.search);
+      const startIndex = Math.min(parseInt(params.get('start') || '0', 10), imageUrls.length - 1);
+
+      let current = isNaN(startIndex) ? 0 : startIndex;
+      const img = document.getElementById('viewer-img');
+      const counter = document.getElementById('viewer-counter');
+      const total = imageUrls.length;
+      let isAnimating = false;
+      let touchStartX = 0;
+
+      function updateCounter() {
+        counter.textContent = `${current + 1} / ${total}`;
+      }
+
+      function goTo(index) {
+        if (isAnimating || index < 0 || index >= total) return;
+        isAnimating = true;
+        img.style.opacity = '0';
+        setTimeout(() => {
+          current = index;
+          img.src = imageUrls[current];
+          img.onload = () => { img.style.opacity = '1'; isAnimating = false; };
+          img.onerror = () => { img.style.opacity = '1'; isAnimating = false; };
+          updateCounter();
+        }, 300);
+      }
+
+      function next() {
+        if (current < total - 1) {
+          goTo(current + 1);
+        } else {
+          window.location.href = `/projects/${nextSlug}`;
+        }
+      }
+
+      function prev() {
+        if (current > 0) {
+          goTo(current - 1);
+        } else {
+          window.location.href = `/projects/${prevSlug}?start=${prevImageCount - 1}`;
+        }
+      }
+
+      document.getElementById('click-next').addEventListener('click', next);
+      document.getElementById('click-prev').addEventListener('click', prev);
+      document.getElementById('btn-next').addEventListener('click', next);
+      document.getElementById('btn-prev').addEventListener('click', prev);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') next();
+        else if (e.key === 'ArrowLeft') prev();
+      });
+
+      document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) { if (dx < 0) next(); else prev(); }
+      }, { passive: true });
+
+      if (current > 0) {
+        img.src = imageUrls[current];
+      }
+      img.style.transition = 'opacity .35s ease';
+      updateCounter();
+    </script>
+  </body>
 </html>

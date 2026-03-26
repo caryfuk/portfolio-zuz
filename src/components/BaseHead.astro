@@ -1,7 +1,6 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
 	title: string;
@@ -10,7 +9,6 @@ interface Props {
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
 const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 ---
 
@@ -20,9 +18,10 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Font preloads -->
-<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -45,3 +44,35 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<ViewTransitions />
+
+<script>
+  // astro:after-preparation fires after the next page's HTML is fetched but before
+  // startViewTransition() is called. We kick off image decoding here so that by the
+  // time the transition needs to swap the DOM, images are already in memory.
+  let decodePromises: Promise<void>[] = [];
+
+  document.addEventListener('astro:after-preparation', (event) => {
+    const incoming = (event as any).newDocument as Document;
+    decodePromises = [...incoming.querySelectorAll<HTMLImageElement>('img[src]')]
+      .map(img => {
+        const src = img.getAttribute('src')!;
+        const pre = new Image();
+        pre.src = src;
+        return pre.decode().catch(() => {});
+      });
+  });
+
+  // astro:before-swap runs inside startViewTransition's callback, which is awaited.
+  // We wait for any remaining decode work, THEN swap so the new DOM is painted with
+  // already-decoded images — the transition snapshot captures them correctly.
+  document.addEventListener('astro:before-swap', (event) => {
+    const originalSwap = event.swap;
+    event.swap = async () => {
+      await Promise.all(decodePromises);
+      decodePromises = [];
+      originalSwap();
+    };
+  });
+</script>
