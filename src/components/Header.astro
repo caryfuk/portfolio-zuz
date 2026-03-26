@@ -22,9 +22,9 @@ const activeClass = 'opacity-40';
 </nav>
 
 <div class="mobile-menu fixed inset-0 bg-white z-[99] hidden flex-col items-center justify-center gap-9" id="mobileMenu">
-  <a href="/" onclick="closeMobileMenu()" class="font-serif text-[28px] text-black">projects</a>
-  <a href="/price" onclick="closeMobileMenu()" class="font-serif text-[28px] text-black">price</a>
-  <a href="/contact" onclick="closeMobileMenu()" class="font-serif text-[28px] text-black">contact</a>
+  <a href="/" class="font-serif text-[28px] text-black">projects</a>
+  <a href="/price" class="font-serif text-[28px] text-black">price</a>
+  <a href="/contact" class="font-serif text-[28px] text-black">contact</a>
 </div>
 
 <style>
@@ -47,5 +47,7 @@ const activeClass = 'opacity-40';
     document.getElementById('mobileMenu')?.classList.remove('open');
   }
 
-  (window as any).closeMobileMenu = closeMobileMenu;
+  document.querySelectorAll('#mobileMenu a').forEach(a => {
+    a.addEventListener('click', closeMobileMenu);
+  });
 </script>

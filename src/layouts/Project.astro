@@ -3,8 +3,10 @@ import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 
+type ContentComponent = Awaited<ReturnType<CollectionEntry<'projects'>['render']>>['Content'];
+
 type Props = CollectionEntry<'projects'> & {
-  Content: any;
+  Content: ContentComponent;
   prevSlug: string;
   prevImageCount: number;
   nextSlug: string;
@@ -13,7 +15,7 @@ type Props = CollectionEntry<'projects'> & {
 const { slug, data, Content, prevSlug, prevImageCount, nextSlug } = Astro.props as Props;
 const { title, images, year, location, credits, isViz } = data;
 
-const imageUrls = images.map((img: any) => `/projects/${slug}/${img.url}.jpg`);
+const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
 ---
 
 <!doctype html>
@@ -34,7 +36,7 @@ const imageUrls = images.map((img: any) => `/projects/${slug}/${img.url}.jpg`);
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
-      <div class="flex-none border-t border-[#e8e8e8] px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:border-t-0 lg:border-l lg:py-10 lg:px-12">
+      <div class="flex-none border-t border-line px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:border-t-0 lg:border-l lg:py-10 lg:px-12">
         <div class="flex-1 flex flex-col justify-center">
           <a href="/" class="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
             <span>←</span>
@@ -44,12 +46,12 @@ const imageUrls = images.map((img: any) => `/projects/${slug}/${img.url}.jpg`);
           <div class="mb-[18px]">
             {year && <p class="text-[13px] text-muted leading-[1.9]">{year}</p>}
             {location && <p class="text-[13px] text-muted leading-[1.9]">{location}</p>}
-            {isViz && <p class="text-[12px] text-[#bbb] italic mt-[5px]">Visualisation / concept</p>}
+            {isViz && <p class="text-[12px] text-faint italic mt-[5px]">Visualisation / concept</p>}
           </div>
-          <div class="text-[13.5px] leading-[1.85] text-[#333] mb-5"><Content /></div>
+          <div class="text-[13.5px] leading-[1.85] text-prose mb-5"><Content /></div>
           {credits && <p class="text-[12.5px] text-muted leading-[2]">{credits}</p>}
         </div>
-        <div transition:persist="project-nav" class="flex items-center justify-between pt-6 border-t border-[#e8e8e8]">
+        <div transition:persist="project-nav" class="flex items-center justify-between pt-6 border-t border-line">
           <button class="bg-transparent border-0 font-sans text-[12px] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
           <span class="text-[12px] text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
           <button class="bg-transparent border-0 font-sans text-[12px] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>

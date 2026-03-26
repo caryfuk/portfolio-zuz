@@ -124,6 +124,8 @@ const articleSchema = type === 'article' && pubDate
 <ViewTransitions />
 
 <script>
+  import type { TransitionBeforePreparationEvent, TransitionBeforeSwapEvent } from 'astro:transitions/client';
+
   let decodePromises: Promise<void>[] = [];
   let elevatedName: string | null = null;
 
@@ -184,7 +186,7 @@ const articleSchema = type === 'article' && pubDate
   // before startViewTransition() is called. Kick off image decoding so that
   // by the time the transition needs to swap the DOM, images are in memory.
   document.addEventListener('astro:after-preparation', (event) => {
-    const incoming = (event as any).newDocument as Document;
+    const incoming = (event as TransitionBeforePreparationEvent).newDocument;
     decodePromises = [...incoming.querySelectorAll<HTMLImageElement>('img[src]')]
       .map(img => {
         const src = img.getAttribute('src')!;
@@ -199,7 +201,7 @@ const articleSchema = type === 'article' && pubDate
   // snapshot (taken after the swap completes) also sees no competing names.
   document.addEventListener('astro:before-swap', (event) => {
     if (elevatedName) {
-      suppressOthers((event as any).newDocument as Document, elevatedName);
+      suppressOthers((event as TransitionBeforeSwapEvent).newDocument, elevatedName);
     }
 
     const originalSwap = event.swap;
