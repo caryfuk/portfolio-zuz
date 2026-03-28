@@ -60,10 +60,10 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
           <div class="text-sm leading-[1.85] text-prose mb-5"><Content /></div>
           {credits && <p class="text-xs text-muted leading-[2]">{credits}</p>}
         </div>
-        <div transition:persist="project-nav" class="flex items-center justify-between pt-6">
-          <button class="bg-transparent border-0 font-sans text-xs text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
-          <span class="text-xs text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
-          <button class="bg-transparent border-0 font-sans text-xs text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>
+        <div transition:persist="project-nav" class="flex items-center justify-between pt-2">
+          <button class="bg-transparent border-0 font-sans text-[0.8125rem] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
+          <span class="text-[0.8125rem] text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
+          <button class="bg-transparent border-0 font-sans text-[0.8125rem] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>
         </div>
       </div>
     </div>
