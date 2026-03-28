@@ -1,21 +1,30 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
+import type { CollectionEntry } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
 
-type ContentComponent = Awaited<ReturnType<CollectionEntry<'projects'>['render']>>['Content'];
+type ContentComponent = Awaited<ReturnType<CollectionEntry<"projects">["render"]>>["Content"];
 
-type Props = CollectionEntry<'projects'> & {
+type Props = CollectionEntry<"projects"> & {
   Content: ContentComponent;
   prevSlug: string;
   prevImageCount: number;
   nextSlug: string;
+  firstImageAR?: number;
 };
 
-const { slug, data, Content, prevSlug, prevImageCount, nextSlug } = Astro.props as Props;
+const {
+  slug,
+  data,
+  Content,
+  prevSlug,
+  prevImageCount,
+  nextSlug,
+  firstImageAR = 1,
+} = Astro.props as Props;
 const { title, images, year, location, credits, isViz } = data;
 
-const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
+const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
 ---
 
 <!doctype html>
@@ -31,8 +40,8 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
   <body class="lg:overflow-hidden">
     <Header />
     <div class="flex flex-col pt-[4.5rem] sm:pt-[5.625rem] lg:flex-row lg:h-screen">
-      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-[1.4] lg:h-[calc(100vh-5.625rem)] lg:min-h-0">
-        <img id="viewer-img" src={`/thumbnails/${slug}.jpg`} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-contain block" />
+      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-[1.4] lg:h-[calc(100vh-5.625rem)] lg:min-h-0 flex items-center justify-center">
+        <img id="viewer-img" src={`/thumbnails/${slug}.jpg`} alt={title} transition:name={`project-${slug}`} style={`aspect-ratio: ${firstImageAR}`} class="max-w-full max-h-full object-contain block" />
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
@@ -70,6 +79,7 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
       let isAnimating = false;
       let initialSwapPending = true;
       let touchStartX = 0;
+      let hiResOverlay = null;
 
       function updateCounter() {
         counter.textContent = `${current + 1} / ${total}`;
@@ -78,12 +88,13 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
       function goTo(index) {
         if (isAnimating || index < 0 || index >= total) return;
         initialSwapPending = false;
+        if (hiResOverlay) { hiResOverlay.remove(); hiResOverlay = null; }
         isAnimating = true;
         img.style.opacity = '0';
         setTimeout(() => {
           current = index;
           img.src = imageUrls[current];
-          img.onload = () => { img.style.opacity = '1'; isAnimating = false; };
+          img.onload = () => { img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`; img.style.opacity = '1'; isAnimating = false; };
           img.onerror = () => { img.style.opacity = '1'; isAnimating = false; };
           updateCounter();
         }, 300);
@@ -127,19 +138,56 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
       img.style.transition = 'opacity .35s ease';
       updateCounter();
 
-      // img.src starts as the thumbnail (same URL the list uses), so the
-      // view-transition is a pixel-perfect match with no flash. Once the
-      // full-res image is ready, swap it in silently.
+      // Start downloading the full-res immediately, but only reveal it once
+      // both conditions are met: image decoded + view transition finished.
       const startUrl = imageUrls[current];
       if (startUrl) {
         const hi = new Image();
         hi.src = startUrl;
-        hi.onload = () => {
-          if (initialSwapPending) {
+
+        let decodeReady = false;
+        let transitionDone = false;
+
+        function maybeReveal() {
+          if (!decodeReady || !transitionDone || !initialSwapPending) return;
+          initialSwapPending = false;
+
+          hiResOverlay = hi;
+          hi.alt = img.alt;
+          hi.style.cssText = [
+            'position:absolute',
+            'top:50%',
+            'left:50%',
+            'transform:translate(-50%,-50%)',
+            'max-width:100%',
+            'max-height:100%',
+            'object-fit:contain',
+            `aspect-ratio:${hi.naturalWidth}/${hi.naturalHeight}`,
+            'opacity:0',
+            'transition:opacity .5s ease',
+          ].join(';');
+          img.parentElement.appendChild(hi);
+          void hi.offsetWidth;
+          hi.style.opacity = '1';
+
+          hi.addEventListener('transitionend', () => {
+            if (hiResOverlay !== hi) return;
+            img.style.aspectRatio = `${hi.naturalWidth} / ${hi.naturalHeight}`;
+            img.onload = () => { hi.remove(); hiResOverlay = null; };
+            img.onerror = () => { hi.remove(); hiResOverlay = null; };
+            img.src = startUrl;
+          }, { once: true });
+        }
+
+        hi.decode().then(() => { decodeReady = true; maybeReveal(); })
+          .catch(() => {
+            if (!initialSwapPending) return;
             initialSwapPending = false;
             img.src = startUrl;
-          }
-        };
+            if (hi.naturalWidth) img.style.aspectRatio = `${hi.naturalWidth} / ${hi.naturalHeight}`;
+          });
+
+        document.addEventListener('astro:transition-end', () => { transitionDone = true; maybeReveal(); }, { once: true });
       }
     </script>
   </body>

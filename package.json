@@ -9,7 +9,12 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "thumbnails": "node scripts/generate-thumbnails.mjs"
+    "thumbnails": "node scripts/generate-thumbnails.mjs",
+    "lint": "biome lint ./src",
+    "lint:fix": "biome lint --write ./src",
+    "format": "biome format --write ./src",
+    "check": "biome check ./src",
+    "check:fix": "biome check --write ./src"
   },
   "dependencies": {
     "@astrojs/check": "^0.5.9",
@@ -23,6 +28,7 @@
     "typescript": "^5.4.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
     "@types/js-yaml": "^4.0.9",
     "@vite-pwa/astro": "^1.2.0",
     "sharp": "^0.34.5"

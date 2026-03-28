@@ -1,69 +1,71 @@
 ---
-import '../styles/global.css';
-import { ViewTransitions } from 'astro:transitions';
-import { SITE_TITLE } from '../consts';
+import "../styles/global.css";
+import { ViewTransitions } from "astro:transitions";
+import { SITE_TITLE } from "../consts";
 
 interface Props {
-	title: string;
-	description: string;
-	image?: string;
-	imageAlt?: string;
-	type?: 'website' | 'article';
-	pubDate?: Date;
-	updatedDate?: Date;
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  pubDate?: Date;
+  updatedDate?: Date;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const {
-	title,
-	description,
-	image = '/social-preview.jpg',
-	imageAlt = title,
-	type = 'website',
-	pubDate,
-	updatedDate,
+  title,
+  description,
+  image = "/social-preview.jpg",
+  imageAlt = title,
+  type = "website",
+  pubDate,
+  updatedDate,
 } = Astro.props;
 
 const ogImageURL = new URL(image, Astro.url);
 
 const personSchema = {
-	'@context': 'https://schema.org',
-	'@type': 'Person',
-	name: 'Zuzi Knaze',
-	url: Astro.site?.toString(),
-	jobTitle: 'Interior Creator',
-	description: 'Interior creator based in The Hague, working at the intersection of architecture, spatial design, and everyday life.',
-	address: {
-		'@type': 'PostalAddress',
-		addressLocality: 'The Hague',
-		addressCountry: 'NL',
-	},
-	sameAs: ['https://www.instagram.com/zuzana.knazeova'],
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Zuzi Knaze",
+  url: Astro.site?.toString(),
+  jobTitle: "Interior Creator",
+  description:
+    "Interior creator based in The Hague, working at the intersection of architecture, spatial design, and everyday life.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "The Hague",
+    addressCountry: "NL",
+  },
+  sameAs: ["https://www.instagram.com/zuzana.knazeova"],
 };
 
 const websiteSchema = {
-	'@context': 'https://schema.org',
-	'@type': 'WebSite',
-	name: SITE_TITLE,
-	url: Astro.site?.toString(),
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_TITLE,
+  url: Astro.site?.toString(),
 };
 
-const articleSchema = type === 'article' && pubDate
-	? {
-		'@context': 'https://schema.org',
-		'@type': 'Article',
-		headline: title,
-		description: description,
-		image: ogImageURL.toString(),
-		datePublished: pubDate.toISOString(),
-		...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
-		author: {
-			'@type': 'Person',
-			name: 'Zuzi Knaze',
-			url: Astro.site?.toString(),
-		},
-	}
-	: null;
+const articleSchema =
+  type === "article" && pubDate
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: title,
+        description: description,
+        image: ogImageURL.toString(),
+        datePublished: pubDate.toISOString(),
+        ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
+        author: {
+          "@type": "Person",
+          name: "Zuzi Knaze",
+          url: Astro.site?.toString(),
+        },
+      }
+    : null;
 ---
 
 <!-- Global Metadata -->
@@ -128,6 +130,7 @@ const articleSchema = type === 'article' && pubDate
 
   let decodePromises: Promise<void>[] = [];
   let elevatedName: string | null = null;
+  let vtInProgress = false;
 
   // For every project thumbnail in `doc` except the one we want to animate,
   // set view-transition-name: none directly as an inline style. Inline styles
@@ -199,9 +202,19 @@ const articleSchema = type === 'article' && pubDate
   // astro:before-swap fires inside startViewTransition's callback.
   // Suppress other thumbnails in newDocument before the swap so the incoming
   // snapshot (taken after the swap completes) also sees no competing names.
+  // Also hook viewTransition.finished to dispatch astro:transition-end once
+  // the animation is truly done — astro:page-load fires too early (before animation).
   document.addEventListener('astro:before-swap', (event) => {
     if (elevatedName) {
       suppressOthers((event as TransitionBeforeSwapEvent).newDocument, elevatedName);
+    }
+
+    const vt = (event as TransitionBeforeSwapEvent).viewTransition;
+    if (vt) {
+      vtInProgress = true;
+      vt.finished
+        .then(() => document.dispatchEvent(new Event('astro:transition-end')))
+        .catch(() => document.dispatchEvent(new Event('astro:transition-end')));
     }
 
     const originalSwap = event.swap;
@@ -209,12 +222,15 @@ const articleSchema = type === 'article' && pubDate
       await Promise.all(decodePromises);
       decodePromises = [];
       originalSwap();
-
     };
   });
 
   // Restore suppressed elements after each navigation so the next one is clean.
+  // For direct page loads (no view transition) dispatch astro:transition-end here
+  // since astro:before-swap never fires and there is no animation to wait for.
   document.addEventListener('astro:page-load', () => {
+    if (!vtInProgress) document.dispatchEvent(new Event('astro:transition-end'));
+    vtInProgress = false;
     restore(document);
     elevatedName = null;
   });

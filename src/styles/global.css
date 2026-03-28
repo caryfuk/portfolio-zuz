@@ -1,51 +1,55 @@
-*, *::before, *::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-	font-family: 'DM Sans', sans-serif;
-	background: #fff;
-	color: #1a1a1a;
-	min-height: 100vh;
-	font-size: 16px;
-	line-height: 1.6;
-	-webkit-font-smoothing: antialiased;
+  font-family: "DM Sans", sans-serif;
+  background: #fff;
+  color: #1a1a1a;
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-	color: inherit;
-	text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 img {
-	max-width: 100%;
-	height: auto;
-	display: block;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Explicit morph duration so we can time the content fade against it */
 ::view-transition-group(*) {
-	animation-duration: 350ms;
-	animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Old page disappears instantly */
 ::view-transition-old(root) {
-	animation: none;
+  animation: none;
 }
 
 /* New page content fades in alongside the morph by default */
 ::view-transition-new(root) {
-	animation: 250ms ease both fade-in;
+  animation: 250ms ease both fade-in;
 }
 
 /* Going back: wait for the image to land first, then fade in the grid */
-html[data-astro-transition=back]::view-transition-new(root) {
-	animation-delay: 300ms;
+html[data-astro-transition="back"]::view-transition-new(root) {
+  animation-delay: 300ms;
 }
 
 @keyframes fade-in {
-	from { opacity: 0; }
+  from {
+    opacity: 0;
+  }
 }
