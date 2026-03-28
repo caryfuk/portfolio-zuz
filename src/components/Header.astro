@@ -1,8 +1,6 @@
 ---
 import logoRaw from '../assets/zk.svg?raw';
-const pathname = Astro.url.pathname;
-const linkClass = 'text-[0.8125rem] text-black no-underline tracking-[0.04em] transition-opacity duration-200 hover:opacity-40';
-const activeClass = 'opacity-40';
+const linkClass = 'nav-link text-[0.8125rem] text-black no-underline tracking-[0.04em] transition-opacity duration-200 hover:opacity-40';
 ---
 
 <nav transition:persist="site-header" class="fixed top-0 left-0 right-0 z-[100] bg-white flex items-start justify-between px-5 pt-4 pb-3 sm:px-6 sm:pt-[1.125rem] sm:pb-3.5 lg:px-10 lg:pt-5 lg:pb-4">
@@ -10,9 +8,9 @@ const activeClass = 'opacity-40';
     <span class="block w-[3.25rem] h-[3.25rem]" aria-label="Zuzi Knaze"><Fragment set:html={logoRaw} /></span>
   </a>
   <ul class="hidden sm:flex gap-9 list-none pt-1">
-    <li><a href="/" class={`${linkClass} ${pathname === '/' || pathname.startsWith('/projects') ? activeClass : ''}`}>projects</a></li>
-    <li><a href="/price" class={`${linkClass} ${pathname === '/price' ? activeClass : ''}`}>price</a></li>
-    <li><a href="/contact" class={`${linkClass} ${pathname === '/contact' ? activeClass : ''}`}>contact</a></li>
+    <li><a href="/" class={linkClass}>projects</a></li>
+    <li><a href="/price" class={linkClass}>price</a></li>
+    <li><a href="/contact" class={linkClass}>contact</a></li>
   </ul>
   <button class="hamburger flex sm:hidden flex-col gap-1.5 cursor-pointer bg-transparent border-0 mt-1 p-0" id="hamburger" aria-label="Open menu">
     <span class="block w-[1.375rem] h-px bg-black transition-all duration-300"></span>
@@ -50,4 +48,16 @@ const activeClass = 'opacity-40';
   document.querySelectorAll('#mobileMenu a').forEach(a => {
     a.addEventListener('click', closeMobileMenu);
   });
+
+  function updateActiveLinks() {
+    const path = window.location.pathname;
+    document.querySelectorAll<HTMLAnchorElement>('.nav-link').forEach(a => {
+      const href = a.getAttribute('href') ?? '';
+      const active = href === '/' ? (path === '/' || path.startsWith('/projects')) : path === href;
+      a.classList.toggle('opacity-40', active);
+    });
+  }
+
+  document.addEventListener('astro:after-swap', updateActiveLinks);
+  updateActiveLinks();
 </script>

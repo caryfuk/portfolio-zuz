@@ -6,7 +6,6 @@ category:
 featured: false
 year: "2011"
 location: "OC Tiptop, Košice, Slovakia"
-credits: "Concept & design by Zuzi Knaze"
 isViz: true
 images:
   - title: ""

@@ -6,7 +6,6 @@ category:
 featured: false
 year: "2025"
 location: "The Hague, Netherlands"
-credits: "Design & making by Zuzi Knaze"
 images:
   - title: ""
     description: ""

@@ -32,13 +32,13 @@ const imageUrls = images.map(img => `/projects/${slug}/${img.url}.jpg`);
     <Header />
     <div class="flex flex-col pt-[4.5rem] sm:pt-[5.625rem] lg:flex-row lg:h-screen">
       <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-[1.4] lg:h-[calc(100vh-5.625rem)] lg:min-h-0">
-        <img id="viewer-img" src={`/thumbnails/${slug}.jpg`} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-cover block" />
+        <img id="viewer-img" src={`/thumbnails/${slug}.jpg`} alt={title} transition:name={`project-${slug}`} class="w-full h-full object-contain block" />
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
       <div class="flex-none px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:py-10 lg:px-12">
         <div class="flex-1 flex flex-col justify-center">
-          <a href="/" class="inline-flex items-center gap-2 text-[0.8125rem] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
+          <a href={`/#${slug}`} class="inline-flex items-center gap-2 text-[0.8125rem] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
             <span>←</span>
             <span>Projects</span>
           </a>

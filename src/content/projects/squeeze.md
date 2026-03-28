@@ -4,7 +4,6 @@ order: 54
 category:
   - objects
 featured: false
-credits: Concept by Zuzi Knaze
 isViz: true
 images:
   - title: ""

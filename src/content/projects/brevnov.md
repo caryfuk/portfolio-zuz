@@ -6,7 +6,6 @@ category:
 featured: false
 year: "2022"
 location: "Na Petrinach, Prague, Czechia"
-credits: Design by Zuzi Knaze
 isViz: true
 images:
   - title: ""

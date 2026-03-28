@@ -6,7 +6,6 @@ category:
 featured: false
 year: "2021"
 location: "Na Chodovci, Prague, Czechia"
-credits: "Design & supervision by Zuzi Knaze"
 images:
   - title: ""
     description: ""

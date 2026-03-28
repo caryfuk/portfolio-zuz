@@ -6,7 +6,6 @@ category:
 featured: true
 year: "2015"
 location: "Zelenecska, Prague, Czechia"
-credits: Design by Zuzi Knaze
 images:
   - title: ""
     description: ""

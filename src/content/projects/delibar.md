@@ -4,9 +4,8 @@ order: 1
 category:
   - exterior-design
 featured: false
-year: "2006"
+year: "2007"
 location: "Prešov University, Prešov, Slovakia"
-credits: Design by Zuzi Knaze
 isViz: true
 images:
   - title: ""

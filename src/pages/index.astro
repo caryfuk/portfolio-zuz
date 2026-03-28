@@ -21,7 +21,7 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
           const cover = project.data.images[0];
           const coverSrc = cover ? `/thumbnails/${project.slug}.jpg` : null;
           return (
-            <a class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" href={`/projects/${project.slug}/`}>
+            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" href={`/projects/${project.slug}/`}>
               {coverSrc && (
                 <img
                   src={coverSrc}
@@ -39,5 +39,13 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
         })}
       </div>
     </main>
+    <script>
+      document.addEventListener('astro:after-swap', () => {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ block: 'center', behavior: 'instant' });
+      });
+    </script>
   </body>
 </html>

@@ -167,7 +167,7 @@ const articleSchema = type === 'article' && pubDate
       // List → project: transition name from the clicked link.
       const slug = href.replace(/^\/projects\//, '').replace(/\/$/, '');
       elevatedName = `project-${slug}`;
-    } else if (href === '/') {
+    } else if (href === '/' || href.startsWith('/#')) {
       // Project → list: transition name from the current URL.
       const m = window.location.pathname.match(/^\/projects\/([^/]+)\/?$/);
       if (m) elevatedName = `project-${m[1]}`;

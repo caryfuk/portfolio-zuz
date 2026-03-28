@@ -5,7 +5,6 @@ category:
   - objects
 featured: false
 location: "The Hague, Netherlands"
-credits: "Design & making by Zuzi Knaze"
 images:
   - title: ""
     description: ""

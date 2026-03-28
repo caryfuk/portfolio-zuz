@@ -5,6 +5,8 @@ category:
   - interior-design
   - exterior-design
 featured: true
+year: "2013"
+location: "Peres Kosice, Slovakia"
 images:
   - title: Barnova
     description: ""

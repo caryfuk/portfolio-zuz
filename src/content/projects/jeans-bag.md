@@ -4,7 +4,6 @@ order: 53
 category:
   - objects
 featured: false
-credits: "Design & making by Zuzi Knaze"
 images:
   - title: ""
     description: ""
