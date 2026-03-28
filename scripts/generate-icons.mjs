@@ -25,10 +25,23 @@ const svgColored = svgRaw.replace(/currentColor/g, '#1a1a1a');
 const svgBuffer = Buffer.from(svgColored);
 
 async function generateIcon(size, outputPath) {
-  await sharp(svgBuffer, { density: 300 })
+  const logoBuffer = await sharp(svgBuffer, { density: 300 })
     .resize(size, size)
     .png()
+    .toBuffer();
+
+  await sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    },
+  })
+    .composite([{ input: logoBuffer, top: 0, left: 0 }])
+    .png()
     .toFile(outputPath);
+
   console.log(`  created ${path.relative(root, outputPath)}`);
 }
 
