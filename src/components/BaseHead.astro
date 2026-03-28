@@ -126,11 +126,10 @@ const articleSchema =
 <ViewTransitions />
 
 <script>
-  import type { TransitionBeforePreparationEvent, TransitionBeforeSwapEvent } from 'astro:transitions/client';
+  import { navigate } from 'astro:transitions/client';
+  import type { TransitionBeforeSwapEvent } from 'astro:transitions/client';
 
-  let decodePromises: Promise<void>[] = [];
   let elevatedName: string | null = null;
-  let vtInProgress = false;
 
   // For every project thumbnail in `doc` except the one we want to animate,
   // set view-transition-name: none directly as an inline style. Inline styles
@@ -170,6 +169,31 @@ const articleSchema =
       // List → project: transition name from the clicked link.
       const slug = href.replace(/^\/projects\//, '').replace(/\/$/, '');
       elevatedName = `project-${slug}`;
+      sessionStorage.setItem('lastProjectSlug', slug);
+
+      // Preload the full-res hero image before navigating so the view
+      // transition has no flash from an uncached image.
+      const fullImage = link.getAttribute('data-full-image');
+      if (fullImage) {
+        e.preventDefault();
+        restore(document);
+        suppressOthers(document, elevatedName);
+
+        let navigated = false;
+        const doNavigate = () => {
+          if (navigated) return;
+          navigated = true;
+          navigate(href);
+        };
+
+        const preload = new Image();
+        preload.onload = doNavigate;
+        preload.onerror = doNavigate;
+        // Fallback: don't block navigation indefinitely on slow connections.
+        setTimeout(doNavigate, 3000);
+        preload.src = fullImage;
+        return;
+      }
     } else if (href === '/' || href.startsWith('/#')) {
       // Project → list: transition name from the current URL.
       const m = window.location.pathname.match(/^\/projects\/([^/]+)\/?$/);
@@ -185,52 +209,17 @@ const articleSchema =
     }
   }, true);
 
-  // astro:after-preparation fires after the next page's HTML is fetched but
-  // before startViewTransition() is called. Kick off image decoding so that
-  // by the time the transition needs to swap the DOM, images are in memory.
-  document.addEventListener('astro:after-preparation', (event) => {
-    const incoming = (event as TransitionBeforePreparationEvent).newDocument;
-    decodePromises = [...incoming.querySelectorAll<HTMLImageElement>('img[src]')]
-      .map(img => {
-        const src = img.getAttribute('src')!;
-        const pre = new Image();
-        pre.src = src;
-        return pre.decode().catch(() => {});
-      });
-  });
-
   // astro:before-swap fires inside startViewTransition's callback.
   // Suppress other thumbnails in newDocument before the swap so the incoming
-  // snapshot (taken after the swap completes) also sees no competing names.
-  // Also hook viewTransition.finished to dispatch astro:transition-end once
-  // the animation is truly done — astro:page-load fires too early (before animation).
+  // snapshot also sees no competing names.
   document.addEventListener('astro:before-swap', (event) => {
     if (elevatedName) {
       suppressOthers((event as TransitionBeforeSwapEvent).newDocument, elevatedName);
     }
-
-    const vt = (event as TransitionBeforeSwapEvent).viewTransition;
-    if (vt) {
-      vtInProgress = true;
-      vt.finished
-        .then(() => document.dispatchEvent(new Event('astro:transition-end')))
-        .catch(() => document.dispatchEvent(new Event('astro:transition-end')));
-    }
-
-    const originalSwap = event.swap;
-    event.swap = async () => {
-      await Promise.all(decodePromises);
-      decodePromises = [];
-      originalSwap();
-    };
   });
 
   // Restore suppressed elements after each navigation so the next one is clean.
-  // For direct page loads (no view transition) dispatch astro:transition-end here
-  // since astro:before-swap never fires and there is no animation to wait for.
   document.addEventListener('astro:page-load', () => {
-    if (!vtInProgress) document.dispatchEvent(new Event('astro:transition-end'));
-    vtInProgress = false;
     restore(document);
     elevatedName = null;
   });
