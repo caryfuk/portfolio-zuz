@@ -45,7 +45,7 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
-      <div class="flex-none px-5 py-6 flex flex-col overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:py-10 lg:px-12">
+      <div class="flex-none px-5 py-6 flex flex-col lg:overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:py-10 lg:px-12">
         <div class="flex-1 flex flex-col justify-center">
           <a href={`/#${slug}`} class="inline-flex items-center gap-2 text-[0.8125rem] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
             <span>←</span>
@@ -69,6 +69,12 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
     </div>
 
     <script is:inline define:vars={{ imageUrls, title, prevSlug, prevImageCount, nextSlug }}>
+      history.scrollRestoration = 'manual';
+
+      document.addEventListener('astro:page-load', () => {
+        requestAnimationFrame(() => window.scrollTo(0, 0));
+      }, { once: true });
+
       const params = new URLSearchParams(window.location.search);
       const startIndex = Math.min(parseInt(params.get('start') || '0', 10), imageUrls.length - 1);
 
