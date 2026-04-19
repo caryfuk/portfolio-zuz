@@ -5,9 +5,26 @@ import Header from "../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 const allProjects = await getCollection("projects");
-const yearKey = (p: typeof allProjects[number]) =>
+type Project = typeof allProjects[number];
+const yearKey = (p: Project) =>
   Number(p.data.year?.match(/\d{4}/g)?.pop() ?? 0);
-const projects = allProjects.sort((a, b) => yearKey(b) - yearKey(a));
+const sorted = allProjects.sort((a, b) => yearKey(b) - yearKey(a));
+
+type Tile =
+  | { kind: "decade"; decade: number }
+  | { kind: "project"; project: Project };
+
+const tiles: Tile[] = [];
+let lastDecade: number | null = null;
+for (const project of sorted) {
+  const y = yearKey(project);
+  const decade = y > 0 ? Math.floor(y / 10) * 10 : null;
+  if (decade !== null && decade !== lastDecade) {
+    tiles.push({ kind: "decade", decade });
+    lastDecade = decade;
+  }
+  tiles.push({ kind: "project", project });
+}
 ---
 
 <!doctype html>
@@ -19,7 +36,15 @@ const projects = allProjects.sort((a, b) => yearKey(b) - yearKey(a));
     <Header />
     <main class="pt-[4.5rem] px-5 sm:pt-24">
       <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-        {projects.map((project) => {
+        {tiles.map((tile) => {
+          if (tile.kind === "decade") {
+            return (
+              <div class="aspect-square flex items-center justify-center select-none" aria-hidden="true">
+                <span class="font-serif text-muted text-4xl sm:text-5xl lg:text-6xl leading-none">{tile.decade}s</span>
+              </div>
+            );
+          }
+          const { project } = tile;
           const cover = project.data.images[0];
           const coverSrc = cover ? `/thumbnails/${project.slug}.jpg` : null;
           const fullImageSrc = cover ? `/projects/${project.slug}/${cover.url}.jpg` : null;
