@@ -105,6 +105,7 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
       const total = imageUrls.length;
       let isAnimating = false;
       let touchStartX = 0;
+      let touchStartY = 0;
 
       function updateCounter() {
         counter.textContent = `${current + 1} / ${total}`;
@@ -151,11 +152,15 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
 
       document.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
       }, { passive: true });
 
       document.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) { if (dx < 0) next(); else prev(); }
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          if (dx < 0) next(); else prev();
+        }
       }, { passive: true });
 
       img.style.transition = 'opacity .35s ease';

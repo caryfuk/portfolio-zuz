@@ -160,7 +160,36 @@ const articleSchema =
     });
   }
 
+  // Reject clicks that came from a scroll gesture. On mobile, the browser still
+  // synthesizes a click when a finger lifts after a small movement, which on a
+  // dense grid of large tap targets causes accidental navigation during scroll.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchWasScroll = false;
+  let lastPointerWasTouch = false;
+  const TAP_SLOP_PX = 10;
+
+  document.addEventListener('pointerdown', (e) => {
+    lastPointerWasTouch = e.pointerType === 'touch';
+    if (!lastPointerWasTouch) return;
+    touchStartX = e.clientX;
+    touchStartY = e.clientY;
+    touchWasScroll = false;
+  }, { passive: true, capture: true });
+
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'touch' || touchWasScroll) return;
+    if (Math.hypot(e.clientX - touchStartX, e.clientY - touchStartY) > TAP_SLOP_PX) {
+      touchWasScroll = true;
+    }
+  }, { passive: true, capture: true });
+
   document.addEventListener('click', (e) => {
+    if (lastPointerWasTouch && touchWasScroll) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return;
+    }
     const link = (e.target as Element).closest('a');
     if (!link) return;
     const href = link.getAttribute('href') ?? '';
