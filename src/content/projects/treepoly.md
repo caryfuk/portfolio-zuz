@@ -5,7 +5,7 @@ category:
   - visualisation
 featured: false
 year: "2011"
-location: "OC Tiptop, Košice, Slovakia"
+location: "OC Tip-Top, Košice, Slovakia"
 images:
   - title: ""
     description: ""

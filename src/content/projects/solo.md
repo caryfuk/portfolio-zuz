@@ -4,7 +4,7 @@ category:
   - exterior-design
 featured: true
 year: "2004"
-location: "lake Rohlik, Ruzinov- Bratislava, Slovakia"
+location: "Rohlík, Ružinov, Bratislava, Slovakia"
 images:
   - title: ""
     description: ""
