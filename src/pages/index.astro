@@ -5,7 +5,9 @@ import Header from "../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 const allProjects = await getCollection("projects");
-const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
+const yearKey = (p: typeof allProjects[number]) =>
+  Number(p.data.year?.match(/\d{4}/g)?.pop() ?? 0);
+const projects = allProjects.sort((a, b) => yearKey(b) - yearKey(a));
 ---
 
 <!doctype html>

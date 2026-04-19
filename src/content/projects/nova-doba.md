@@ -1,6 +1,5 @@
 ---
 title: New age apartment
-order: 1
 category:
   - interior-design
 featured: false

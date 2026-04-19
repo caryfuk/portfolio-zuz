@@ -1,6 +1,5 @@
 ---
 title: Apartment Prague Sporilov
-order: 52
 category:
   - interior-design
 featured: false

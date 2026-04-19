@@ -1,6 +1,5 @@
 ---
 title: Solo
-order: 1
 category:
   - exterior-design
 featured: true

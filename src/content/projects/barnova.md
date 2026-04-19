@@ -1,6 +1,5 @@
 ---
 title: Barnova
-order: 1
 category:
   - interior-design
   - exterior-design

@@ -1,6 +1,5 @@
 ---
 title: Apartment Prague Hloubetin
-order: 1
 category:
   - interior-design
 featured: true

@@ -1,6 +1,5 @@
 ---
 title: Traktácie
-order: 61
 category:
   - objects
   - food

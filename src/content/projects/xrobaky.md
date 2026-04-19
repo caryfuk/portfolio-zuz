@@ -1,6 +1,5 @@
 ---
 title: Xrobáky
-order: 62
 category:
   - objects
   - sculpture

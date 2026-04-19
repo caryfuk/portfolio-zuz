@@ -1,6 +1,5 @@
 ---
 title: Detské kreslo
-order: 57
 category:
   - objects
   - furniture

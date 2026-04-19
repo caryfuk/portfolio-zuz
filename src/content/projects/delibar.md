@@ -1,6 +1,5 @@
 ---
 title: Delibar
-order: 1
 category:
   - exterior-design
   - visualisation

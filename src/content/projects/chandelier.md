@@ -1,6 +1,5 @@
 ---
 title: Chandelier
-order: 1
 category:
   - objects
   - lighting

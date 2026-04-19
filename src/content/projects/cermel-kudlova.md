@@ -1,6 +1,5 @@
 ---
 title: Cermel-Kudlova
-order: 1
 category:
   - interior-design
   - exterior-design

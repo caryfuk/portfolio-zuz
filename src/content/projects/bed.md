@@ -1,6 +1,5 @@
 ---
 title: Bed
-order: 1
 category:
   - objects
   - furniture

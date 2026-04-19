@@ -1,6 +1,5 @@
 ---
 title: Pleasaky
-order: 59
 category:
   - objects
   - textile

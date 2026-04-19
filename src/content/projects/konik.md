@@ -1,6 +1,5 @@
 ---
 title: Konik
-order: 50
 category:
   - objects
   - furniture

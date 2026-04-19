@@ -48,7 +48,6 @@ scripts/
 ```markdown
 ---
 title: Project Name
-order: 5          # Controls sort order on the grid (lower = first)
 category:
   - interior-design   # or: exterior-design, furniture, object
 featured: false       # Set true to highlight on the home page

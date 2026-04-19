@@ -1,6 +1,5 @@
 ---
 title: Lifeline
-order: 1
 category:
   - interior-design
 featured: false

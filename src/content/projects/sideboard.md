@@ -1,6 +1,5 @@
 ---
 title: Sideboard
-order: 1
 category:
   - objects
   - furniture

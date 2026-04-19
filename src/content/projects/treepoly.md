@@ -1,6 +1,5 @@
 ---
 title: Treepoly
-order: 56
 category:
   - exterior-design
   - visualisation

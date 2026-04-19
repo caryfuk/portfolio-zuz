@@ -1,6 +1,5 @@
 ---
 title: Commode
-order: 1
 category:
   - objects
   - furniture

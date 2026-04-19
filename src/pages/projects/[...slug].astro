@@ -6,7 +6,9 @@ import Project from "../../layouts/Project.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
-  const sorted = projects.sort((a, b) => a.data.order - b.data.order);
+  const yearKey = (p: typeof projects[number]) =>
+    Number(p.data.year?.match(/\d{4}/g)?.pop() ?? 0);
+  const sorted = projects.sort((a, b) => yearKey(b) - yearKey(a));
 
   return await Promise.all(
     sorted.map(async (project, i) => {

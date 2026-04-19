@@ -1,6 +1,5 @@
 ---
 title: Humenné
-order: 1
 category:
   - interior-design
   - exterior-design

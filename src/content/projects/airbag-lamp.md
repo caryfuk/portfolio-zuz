@@ -1,6 +1,5 @@
 ---
 title: Airbag Lamp
-order: 55
 category:
   - objects
   - lighting

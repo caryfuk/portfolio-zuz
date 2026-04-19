@@ -1,6 +1,5 @@
 ---
 title: Apartment Prague Brevnov
-order: 51
 category:
   - interior-design
   - visualisation

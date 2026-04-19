@@ -1,6 +1,5 @@
 ---
 title: Šperky
-order: 60
 category:
   - objects
   - jewellery

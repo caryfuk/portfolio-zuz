@@ -1,6 +1,5 @@
 ---
 title: Obrazy
-order: 58
 category:
   - objects
   - painting
