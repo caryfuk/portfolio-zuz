@@ -42,6 +42,12 @@ images:
   - title: ""
     description: ""
     url: "PXL_20260213_105406204"
+  - title: ""
+    description: ""
+    url: "IMG_20210805_112442"
+  - title: ""
+    description: ""
+    url: "IMG_20210805_112537"
 ---
 
 An ongoing record of tables set for people — food laid out, plates arranged, the small choreography of hospitality. Not styling for its own sake but the quiet care that turns a meal into an occasion.
