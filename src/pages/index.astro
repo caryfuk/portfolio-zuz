@@ -49,14 +49,14 @@ for (const project of sorted) {
           const coverSrc = cover ? `/thumbnails/${project.slug}.jpg` : null;
           const fullImageSrc = cover ? `/projects/${project.slug}/${cover.url}.jpg` : null;
           return (
-            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" href={`/projects/${project.slug}/`} data-full-image={fullImageSrc}>
+            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" href={`/projects/${project.slug}/`} data-full-image={fullImageSrc} data-parallax>
               {coverSrc && (
                 <img
                   src={coverSrc}
                   alt={project.data.title}
                   loading="eager"
                   transition:name={`project-${project.slug}`}
-                  class="w-full h-full object-contain block transition-[transform,opacity] duration-500 group-hover:scale-[1.04] group-hover:opacity-[0.88]"
+                  class="w-full h-full object-contain block tile-img group-hover:scale-[1.04] group-hover:opacity-[0.88]"
                 />
               )}
               <div class="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -67,6 +67,11 @@ for (const project of sorted) {
         })}
       </div>
     </main>
+    <style>
+      .tile-img {
+        transition: transform 500ms, translate 220ms ease-out, opacity 500ms;
+      }
+    </style>
     <script>
       document.addEventListener('astro:after-swap', () => {
         if (window.location.pathname !== '/') return;
@@ -77,6 +82,27 @@ for (const project of sorted) {
         const el = document.getElementById(slug);
         if (el) el.scrollIntoView({ block: 'center', behavior: 'instant' });
       });
+
+      const PARALLAX_MAX_PX = 16;
+      function attachParallax() {
+        document.querySelectorAll<HTMLAnchorElement>('a[data-parallax]').forEach((tile) => {
+          if ((tile as any).__parallax) return;
+          (tile as any).__parallax = true;
+          const img = tile.querySelector<HTMLImageElement>('img');
+          if (!img) return;
+          tile.addEventListener('pointermove', (e) => {
+            if (e.pointerType === 'touch') return;
+            const r = tile.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            img.style.translate = `${(-x * PARALLAX_MAX_PX).toFixed(2)}px ${(-y * PARALLAX_MAX_PX).toFixed(2)}px`;
+          });
+          tile.addEventListener('pointerleave', () => {
+            img.style.translate = '0 0';
+          });
+        });
+      }
+      document.addEventListener('astro:page-load', attachParallax);
     </script>
   </body>
 </html>
