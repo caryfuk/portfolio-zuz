@@ -242,8 +242,12 @@ const articleSchema =
   // Suppress other thumbnails in newDocument before the swap so the incoming
   // snapshot also sees no competing names.
   document.addEventListener('astro:before-swap', (event) => {
+    const e = event as TransitionBeforeSwapEvent;
     if (elevatedName) {
-      suppressOthers((event as TransitionBeforeSwapEvent).newDocument, elevatedName);
+      suppressOthers(e.newDocument, elevatedName);
+      // Project → home is already dramatic via the elevated image transition;
+      // suppress the tile stagger so the incoming grid appears immediately.
+      e.newDocument.querySelector('.stagger-in')?.classList.remove('stagger-in');
     }
   });
 

@@ -6,7 +6,7 @@ import AstroPWA from '@vite-pwa/astro';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://zuzi-knaze.netlify.app',
   integrations: [
     mdx(),
     sitemap(),

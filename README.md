@@ -2,6 +2,8 @@
 
 Portfolio website for Zuzi Knaze — interior creator based in The Hague. Built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com), and MDX.
 
+Deployed at **[zuzi-knaze.netlify.app](https://zuzi-knaze.netlify.app)**.
+
 ## Commands
 
 All commands are run from the project root:

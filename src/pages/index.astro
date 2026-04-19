@@ -35,11 +35,11 @@ for (const project of sorted) {
   <body>
     <Header />
     <main class="pt-[4.5rem] px-5 sm:pt-24">
-      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-        {tiles.map((tile) => {
+      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 stagger-in">
+        {tiles.map((tile, i) => {
           if (tile.kind === "decade") {
             return (
-              <div class="aspect-square flex items-center justify-center select-none" aria-hidden="true">
+              <div class="aspect-square flex items-center justify-center select-none" style={`--i:${i}`} aria-hidden="true">
                 <span class="font-serif text-muted text-4xl sm:text-5xl lg:text-6xl leading-none">{tile.decade}s</span>
               </div>
             );
@@ -49,7 +49,7 @@ for (const project of sorted) {
           const coverSrc = cover ? `/thumbnails/${project.slug}.jpg` : null;
           const fullImageSrc = cover ? `/projects/${project.slug}/${cover.url}.jpg` : null;
           return (
-            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" href={`/projects/${project.slug}/`} data-full-image={fullImageSrc} data-parallax>
+            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" style={`--i:${i}`} href={`/projects/${project.slug}/`} data-full-image={fullImageSrc} data-parallax>
               {coverSrc && (
                 <img
                   src={coverSrc}
@@ -70,6 +70,17 @@ for (const project of sorted) {
     <style>
       .tile-img {
         transition: transform 500ms, translate 220ms ease-out, opacity 500ms;
+      }
+      @keyframes tile-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: none; }
+      }
+      .stagger-in > * {
+        animation: tile-in 480ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        animation-delay: calc(var(--i, 0) * 28ms);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .stagger-in > * { animation: none; }
       }
     </style>
     <script>
