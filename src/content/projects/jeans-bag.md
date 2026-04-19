@@ -3,6 +3,7 @@ title: Jeans Bag
 order: 53
 category:
   - objects
+  - accessories
 featured: false
 images:
   - title: ""

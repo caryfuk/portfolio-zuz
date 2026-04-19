@@ -3,10 +3,10 @@ title: Apartment Prague Brevnov
 order: 51
 category:
   - interior-design
+  - visualisation
 featured: false
 year: "2022"
 location: "Na Petrinach, Prague, Czechia"
-isViz: true
 images:
   - title: ""
     description: ""

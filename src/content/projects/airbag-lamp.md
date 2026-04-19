@@ -3,6 +3,7 @@ title: Airbag Lamp
 order: 55
 category:
   - objects
+  - lighting
 featured: false
 year: "2025"
 location: "The Hague, Netherlands"

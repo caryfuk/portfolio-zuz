@@ -3,7 +3,9 @@ title: Sideboard
 order: 1
 category:
   - objects
+  - furniture
 featured: false
+year: "2017"
 images:
   - title: ""
     description: ""
@@ -14,11 +16,5 @@ images:
   - title: ""
     description: ""
     url: "2017-01-03-12-29"
-  - title: ""
-    description: ""
-    url: ykrina1
-  - title: ""
-    description: ""
-    url: ykrina2
 ---
 

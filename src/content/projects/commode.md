@@ -3,7 +3,9 @@ title: Commode
 order: 1
 category:
   - objects
+  - furniture
 featured: false
+year: "2016"
 images:
   - title: ""
     description: ""

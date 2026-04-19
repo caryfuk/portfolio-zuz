@@ -76,7 +76,6 @@ Apply the design and structure from `design.html` to the existing Astro site whi
   - `PROJECTS` label: 13px uppercase muted
   - Project title: DM Serif Display, 26px
   - Year + location: 13px muted
-  - "Visualisation / concept" note (italic, lighter) — shown if `isViz: true`
   - Description: 13.5px, line-height 1.85
   - Credits: 12.5px muted
   - Bottom nav: `← all projects` | `1 / N` counter | `next →`
@@ -135,7 +134,7 @@ Bio text (4 paragraphs from design.html — confirm/replace with real content wh
 - [ ] `src/pages/contact.astro` — contact page
 
 ### Phase 4 — Schema
-- [ ] `src/content/config.ts` — add optional fields: `year`, `location`, `credits`, `isViz`
+- [ ] `src/content/config.ts` — add optional fields: `year`, `location`, `credits`
 
 ---
 

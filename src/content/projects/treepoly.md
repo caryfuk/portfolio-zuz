@@ -3,10 +3,10 @@ title: Treepoly
 order: 56
 category:
   - exterior-design
+  - visualisation
 featured: false
 year: "2011"
 location: "OC Tiptop, Košice, Slovakia"
-isViz: true
 images:
   - title: ""
     description: ""

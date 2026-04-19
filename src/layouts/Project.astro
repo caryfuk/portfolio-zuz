@@ -22,7 +22,11 @@ const {
   nextSlug,
   firstImageAR = 1,
 } = Astro.props as Props;
-const { title, images, year, location, credits, isViz } = data;
+const { title, images, year, location, credits, category } = data;
+
+const categoryLabels = category.map((c) =>
+  c.replace(/-/g, " ").replace(/^./, (ch) => ch.toUpperCase())
+);
 
 const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
 ---
@@ -55,7 +59,7 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
           <div class="mb-[1.125rem]">
             {year && <p class="text-[0.8125rem] text-muted leading-[1.9]">{year}</p>}
             {location && <p class="text-[0.8125rem] text-muted leading-[1.9]">{location}</p>}
-            {isViz && <p class="text-xs text-faint italic mt-1">Visualisation / concept</p>}
+            {categoryLabels.length > 0 && <p class="text-[0.8125rem] text-muted leading-[1.9]">{categoryLabels.join(", ")}</p>}
           </div>
           <div class="text-sm leading-[1.85] text-prose mb-5"><Content /></div>
           {credits && <p class="text-xs text-muted leading-[2]">{credits}</p>}

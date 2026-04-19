@@ -23,7 +23,6 @@ const projects = defineCollection({
     year: z.string().optional(),
     location: z.string().optional(),
     credits: z.string().optional(),
-    isViz: z.boolean().optional(),
     images: z
       .array(
         z.object({

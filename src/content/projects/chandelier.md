@@ -3,7 +3,9 @@ title: Chandelier
 order: 1
 category:
   - objects
+  - lighting
 featured: false
+year: "2017"
 images:
   - title: ""
     description: ""

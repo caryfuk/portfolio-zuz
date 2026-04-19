@@ -4,6 +4,7 @@ order: 1
 category:
   - interior-design
 featured: false
+year: "2007"
 images:
   - title: ""
     description: ""

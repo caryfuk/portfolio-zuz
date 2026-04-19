@@ -3,10 +3,10 @@ title: Delibar
 order: 1
 category:
   - exterior-design
+  - visualisation
 featured: false
 year: "2007"
 location: "Prešov University, Prešov, Slovakia"
-isViz: true
 images:
   - title: ""
     description: ""

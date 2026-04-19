@@ -55,7 +55,6 @@ featured: false       # Set true to highlight on the home page
 year: "2024"          # Optional
 location: "City, Country"  # Optional
 credits: "Design by Zuzi Knaze"  # Optional
-isViz: true           # Optional — marks the project as a visualisation only
 images:
   - title: ""
     description: ""

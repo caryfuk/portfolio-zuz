@@ -3,7 +3,9 @@ title: Bed
 order: 1
 category:
   - objects
+  - furniture
 featured: false
+year: "2012"
 images:
   - title: ""
     description: ""

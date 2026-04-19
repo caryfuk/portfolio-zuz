@@ -4,6 +4,7 @@ order: 1
 category:
   - interior-design
 featured: false
+year: "2012"
 images:
   - title: ""
     description: ""
@@ -78,4 +79,6 @@ images:
     description: ""
     url: shopa9
 ---
+
+An interior for JustPlay — a clothing store whose name set the brief. Playful, free, fresh, young. The space leans into exactly that: open layouts, bold gestures, nothing precious. Designed to feel less like a showroom and more like an invitation to try things on and not take it all too seriously.
 
