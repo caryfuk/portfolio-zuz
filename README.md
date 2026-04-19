@@ -15,6 +15,7 @@ All commands are run from the project root:
 | `npm run build` | Type-check and build to `./dist/` |
 | `npm run preview` | Preview the production build locally |
 | `npm run thumbnails` | Regenerate project grid thumbnails only (without a full build) |
+| `npm run resize-images` | Resize oversized project images in `public/projects/` (long edge → 1800px, JPEG q80). Idempotent — skips any image already at or below the target size, so it is safe to re-run after adding new photos. |
 
 `npm run build` automatically runs two pre-build scripts before the Astro build:
 - **generate-icons** — rasterises `src/assets/zk.svg` into PWA icons at `public/icons/`
