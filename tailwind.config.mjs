@@ -14,6 +14,7 @@ export default {
 			fontFamily: {
 				sans: ['DM Sans', 'sans-serif'],
 				serif: ['"DM Serif Display"', 'serif'],
+				display: ['Syne', 'sans-serif'],
 			},
 		},
 	},

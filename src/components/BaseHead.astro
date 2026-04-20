@@ -79,7 +79,7 @@ const articleSchema =
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400..800&display=swap" rel="stylesheet" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -246,8 +246,18 @@ const articleSchema =
     if (elevatedName) {
       suppressOthers(e.newDocument, elevatedName);
       // Project → home is already dramatic via the elevated image transition;
-      // suppress the tile stagger so the incoming grid appears immediately.
-      e.newDocument.querySelector('.stagger-in')?.classList.remove('stagger-in');
+      // swap the tile stagger for a quick uniform fade on the incoming grid.
+      const grid = e.newDocument.querySelector('.stagger-in');
+      if (grid) {
+        grid.classList.remove('stagger-in');
+        grid.classList.add('fade-in-quick');
+      }
+    } else {
+      // Cross-section nav (e.g. /contact → /): no elevated tile, so incoming
+      // thumbnails' view-transition-names would each spawn a per-tile entry
+      // transition that fights the .stagger-in animation. Strip them so the
+      // VT collapses to a clean root fade over the stagger.
+      suppressOthers(e.newDocument, '');
     }
   });
 

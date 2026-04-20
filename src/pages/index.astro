@@ -40,7 +40,7 @@ for (const project of sorted) {
           if (tile.kind === "decade") {
             return (
               <div class="aspect-square flex items-center justify-center select-none" style={`--i:${i}`} aria-hidden="true">
-                <span class="font-serif text-muted text-4xl sm:text-5xl lg:text-6xl leading-none">{tile.decade}s</span>
+                <span class="font-display font-bold text-muted text-4xl sm:text-5xl lg:text-6xl leading-none">{tile.decade}s</span>
               </div>
             );
           }
@@ -49,17 +49,17 @@ for (const project of sorted) {
           const coverSrc = cover ? `/thumbnails/${project.slug}.jpg` : null;
           const fullImageSrc = cover ? `/projects/${project.slug}/${cover.url}.jpg` : null;
           return (
-            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" style={`--i:${i}`} href={`/projects/${project.slug}/`} data-full-image={fullImageSrc} data-parallax>
+            <a id={project.slug} class="group relative overflow-hidden cursor-pointer aspect-square bg-white block" style={`--i:${i}`} href={`/projects/${project.slug}/`} data-full-image={fullImageSrc}>
               {coverSrc && (
                 <img
                   src={coverSrc}
                   alt={project.data.title}
                   loading="eager"
                   transition:name={`project-${project.slug}`}
-                  class="w-full h-full object-contain block tile-img group-hover:scale-[1.04] group-hover:opacity-[0.88]"
+                  class="w-full h-full object-contain block tile-img group-hover:opacity-[0.88]"
                 />
               )}
-              <div class="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100">
                 <span class="text-xs font-medium text-white tracking-[0.06em] uppercase">{project.data.title}</span>
               </div>
             </a>
@@ -69,11 +69,7 @@ for (const project of sorted) {
     </main>
     <style>
       .tile-img {
-        transition: transform 500ms, translate 220ms ease-out, opacity 500ms;
-      }
-      a[data-parallax]:focus,
-      a[data-parallax]:focus-visible {
-        outline: none;
+        transition: opacity 700ms;
       }
       @keyframes tile-in {
         from { opacity: 0; transform: translateY(10px); }
@@ -83,8 +79,16 @@ for (const project of sorted) {
         animation: tile-in 480ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
         animation-delay: calc(var(--i, 0) * 28ms);
       }
+      @keyframes quick-fade-in {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+      .fade-in-quick > * {
+        animation: quick-fade-in 300ms ease-out both;
+      }
       @media (prefers-reduced-motion: reduce) {
-        .stagger-in > * { animation: none; }
+        .stagger-in > *,
+        .fade-in-quick > * { animation: none; }
       }
     </style>
     <script>
@@ -97,27 +101,6 @@ for (const project of sorted) {
         const el = document.getElementById(slug);
         if (el) el.scrollIntoView({ block: 'center', behavior: 'instant' });
       });
-
-      const PARALLAX_MAX_PX = 16;
-      function attachParallax() {
-        document.querySelectorAll<HTMLAnchorElement>('a[data-parallax]').forEach((tile) => {
-          if ((tile as any).__parallax) return;
-          (tile as any).__parallax = true;
-          const img = tile.querySelector<HTMLImageElement>('img');
-          if (!img) return;
-          tile.addEventListener('pointermove', (e) => {
-            if (e.pointerType === 'touch') return;
-            const r = tile.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width - 0.5;
-            const y = (e.clientY - r.top) / r.height - 0.5;
-            img.style.translate = `${(-x * PARALLAX_MAX_PX).toFixed(2)}px ${(-y * PARALLAX_MAX_PX).toFixed(2)}px`;
-          });
-          tile.addEventListener('pointerleave', () => {
-            img.style.translate = '0 0';
-          });
-        });
-      }
-      document.addEventListener('astro:page-load', attachParallax);
     </script>
   </body>
 </html>
