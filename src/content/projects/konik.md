@@ -5,7 +5,6 @@ category:
   - furniture
 featured: false
 year: "2016"
-location: "The Hague, Netherlands"
 images:
   - title: ""
     description: ""
