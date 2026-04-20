@@ -44,13 +44,13 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
   <body class="lg:overflow-hidden">
     <Header />
     <div class="flex flex-col pt-[4.5rem] sm:pt-[5.625rem] lg:flex-row lg:h-screen">
-      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-[1.4] lg:h-[calc(100vh-5.625rem)] lg:min-h-0 flex items-center justify-center">
-        <img id="viewer-img" src={imageUrls[0]} alt={title} transition:name={`project-${slug}`} style={`aspect-ratio: ${firstImageAR}`} class="max-w-full max-h-full object-contain block" />
+      <div class="relative flex-none overflow-hidden bg-white cursor-pointer h-[70vw] min-h-64 sm:h-[55vw] sm:min-h-72 lg:flex-1 lg:h-[calc(100vh-5.625rem)] lg:min-h-0 flex items-center justify-center">
+        <img id="viewer-img" src={imageUrls[0]} alt={title} transition:name={`project-${slug}`} style={`aspect-ratio: ${firstImageAR}`} class="w-full h-full object-contain block" />
         <div class="absolute top-0 left-0 w-1/2 h-full z-[2] cursor-pointer" id="click-prev"></div>
         <div class="absolute top-0 right-0 w-1/2 h-full z-[2] cursor-pointer" id="click-next"></div>
       </div>
-      <div class="flex-none px-5 py-6 flex flex-col lg:overflow-y-auto sm:px-6 sm:py-7 lg:flex-1 lg:py-10 lg:px-12">
-        <div class="flex-1 flex flex-col justify-center">
+      <div class="flex-none px-5 py-6 flex flex-col lg:overflow-y-auto sm:px-6 sm:py-7 lg:flex-none lg:w-[40%] xl:w-[30%] lg:py-10 lg:px-12">
+        <div class="flex-1 flex flex-col justify-center w-full lg:max-w-[32rem] lg:mx-auto">
           <a href={`/#${slug}`} class="inline-flex items-center gap-2 text-[0.8125rem] tracking-[0.1em] uppercase text-muted mb-5 transition-opacity duration-200 hover:opacity-60">
             <span>←</span>
             <span>Projects</span>
@@ -72,7 +72,7 @@ const imageUrls = images.map((img) => `/projects/${slug}/${img.url}.jpg`);
           <div class="text-sm leading-[1.85] text-prose mb-5"><Content /></div>
           {credits && <p class="text-xs text-muted leading-[2]">{credits}</p>}
         </div>
-        <div transition:persist="project-nav" class="flex items-center justify-between pt-2">
+        <div transition:persist="project-nav" class="flex items-center justify-between pt-2 w-full lg:max-w-[32rem] lg:mx-auto">
           <button class="bg-transparent border-0 font-sans text-[0.8125rem] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-prev">← previous</button>
           <span class="text-[0.8125rem] text-muted tracking-[0.04em]" id="viewer-counter">1 / {imageUrls.length}</span>
           <button class="bg-transparent border-0 font-sans text-[0.8125rem] text-muted tracking-[0.06em] uppercase cursor-pointer transition-colors duration-200 hover:text-black p-0" id="btn-next">next →</button>
